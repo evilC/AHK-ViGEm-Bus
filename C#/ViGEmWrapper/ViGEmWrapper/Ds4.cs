@@ -1,4 +1,5 @@
-﻿using Nefarius.ViGEm.Client.Targets;
+﻿using System.Diagnostics;
+using Nefarius.ViGEm.Client.Targets;
 using Nefarius.ViGEm.Client.Targets.DualShock4;
 
 namespace ViGEmWrapper
@@ -28,6 +29,16 @@ namespace ViGEmWrapper
         public void SetAxisState(DualShock4Axes axis, byte state)
         {
             _report.SetAxis(axis, state);
+        }
+
+        public void SetDpadState(DualShock4DPadValues direction)
+        {
+            _report.SetDPad(direction);
+        }
+
+        public void SetSpecialButtonState(DualShock4SpecialButtons btn, bool state)
+        {
+            _report.SetSpecialButtonState(btn, state);
         }
 
         public void SendReport()

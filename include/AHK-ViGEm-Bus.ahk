@@ -7,9 +7,7 @@ class ViGEmWrapper {
 	
 	Init(){
 		if (this.client == 0){
-			;~ this.asm := CLR_LoadLibrary(A_LineFile "\..\Nefarius.ViGEmClient.dll")
 			this.asm := CLR_LoadLibrary(A_LineFile "\..\ViGEmWrapper.dll")
-			;~ this.client := this.asm.CreateInstance("Nefarius.ViGEm.Client.ViGEmClient")
 		}
 	}
 	
@@ -18,12 +16,6 @@ class ViGEmWrapper {
 	}
 
 }
-
-XbButtons := {A: 4096, B: 8192, X: 16384, Y: 32768, LB: 256, RB: 512, Back: 32, Start: 64, DpadUp: 1, DpadDown: 2, DpadLeft: 3, DpadRight: 4}
-XbAxes := {LX: 2, LY: 3, RX: 4, RY: 5, LT: 0, RT: 1}
-DS4Buttons := {Square: 16, Cross: 32, Circle: 64, Triangle: 128, ShoulderLeft: 256, ShoulderRight: 512, TriggerLeft: 1024, TriggerRight: 2048
-	, Share: 4096, Options: 8192, ThumbLeft: 16384, ThumbRight: 32768 }
-Ds4Axes := {LX: 2, LY: 3, RX: 4, RY: 5, LT: 0, RT: 1}
 
 ; Base class for ViGEm "Targets" (Controller types - eg xb360 / ds4) to inherit from
 class ViGEmTarget {
@@ -40,52 +32,176 @@ class ViGEmTarget {
 			msgbox ViGEmWrapper.dll failed to load!
 			ExitApp
 		}
-		
-		/*
-		ViGEmClient.Init()
-		;~ this.target := CLR_CreateObject(ViGEmClient.asm, this.helperClass
-			;~ , CLR_CreateObject(ViGEmClient.asm, this.controllerClass, ViGEmClient.client))
-		this.Instance := CLR_CreateObject(ViGEmClient.asm, this.controllerClass, ViGEmClient.client)
-		;~ this.report := CLR_CreateObject(ViGEmClient.asm, this.reportClass)
-		this.report := ViGEmClient.asm.CreateInstance(this.reportClass)
-		this.Instance.Connect()
-		*/
-	}
-	
-	SetAxisState(axis, state){
-		;~ state := Floor((state - 50) * 655.35)
-		;~ state *= 648.8712871287129
-		
-		this.Instance.SetAxisState(axis, state)
-		;~ this.report.SetAxisState(axis, state)
-		return this
-	}
-
-	SetButtonState(btn, state){
-		;~ this.target.SetButtonState(btn, state)
-		this.Instance.SetButtonState(btn, state)
-		;~ this.report.SetButtonState(btn, state)
-		return this
 	}
 	
 	SendReport(){
 		this.Instance.SendReport()
-		return this
 	}
-
 }
 
-; DS4-specific info (DualShock 4 for Playstation 4)
+; DS4 (DualShock 4 for Playstation 4)
 class ViGEmDS4 extends ViGEmTarget {
-	;~ helperClass := "Nefarius.ViGEm.Client.Targets.DualShock4.DualShock4Helper"
 	helperClass := "ViGEmWrapper.Ds4"
-	;~ controllerClass := "Nefarius.ViGEm.Client.Targets.DualShock4Controller"
+	__New(){
+		static buttons := {Square: 16, Cross: 32, Circle: 64, Triangle: 128, L1: 256, R1: 512, L2: 1024, R2: 2048
+			, Share: 4096, Options: 8192, LS: 16384, RS: 32768 }
+		static specialButtons := {Ps: 1, TouchPad: 2}
+		static axes := {LX: 2, LY: 3, RX: 4, RY: 5, LT: 0, RT: 1}
+		
+		this.Buttons := {}
+		for name, id in buttons {
+			this.Buttons[name] := new this._ButtonHelper(this, id)
+		}
+		for name, id in specialButtons {
+			this.Buttons[name] := new this._SpecialButtonHelper(this, id)
+		}
+		
+		this.Axes := {}
+		for name, id in axes {
+			this.Axes[name] := new this._AxisHelper(this, id)
+		}
+		
+		this.Dpad := new this._DpadHelper(this)
+		base.__New()
+	}
+	
+	class _ButtonHelper {
+		__New(parent, id){
+			this._Parent := parent
+			this._Id := id
+		}
+		
+		SetState(state){
+			this._Parent.Instance.SetButtonState(this._Id, state)
+			this._Parent.Instance.SendReport()
+			return this._Parent
+		}
+	}
+	
+	class _SpecialButtonHelper {
+		__New(parent, id){
+			this._Parent := parent
+			this._Id := id
+		}
+		
+		SetState(state){
+			this._Parent.Instance.SetSpecialButtonState(this._Id, state)
+			this._Parent.Instance.SendReport()
+			return this._Parent
+		}
+	}
+	
+	class _AxisHelper {
+		__New(parent, id){
+			this._Parent := parent
+			this._Id := id
+		}
+		
+		SetState(state){
+			this._Parent.Instance.SetAxisState(this._Id, this.ConvertAxis(state))
+			this._Parent.Instance.SendReport()
+			return this._Parent
+		}
+		
+		ConvertAxis(state){
+			return round(state * 2.55)
+		}
+	}
+	
+	class _DpadHelper {
+		__New(parent){
+			this._Parent := parent
+			this._Id := id
+		}
+		
+		SetState(state){
+			static dPadDirections := {Up: 0, UpRight: 1, Right: 2, DownRight: 3, Down: 4, DownLeft: 5, Left: 6, UpLeft: 7, None: 8}
+			this._Parent.Instance.SetDpadState(dPadDirections[state])
+			this._Parent.Instance.SendReport()
+			return this._Parent
+		}
+	}
 }
 
-; Xb360-specific settings
+; Xb360
 class ViGEmXb360 extends ViGEmTarget {
-	;~ helperClass := "Nefarius.ViGEm.Client.Targets.Xbox360.Xb360Helper"
 	helperClass := "ViGEmWrapper.Xb360"
-	;~ controllerClass := "Nefarius.ViGEm.Client.Targets.Xbox360Controller"
-	;~ reportClass := "Nefarius.ViGEm.Client.Targets.Xbox360.Xbox360Report"
+	__New(){
+		static buttons := {A: 4096, B: 8192, X: 16384, Y: 32768, LB: 256, RB: 512, LS: 64, RS: 128, Back: 32, Start: 16, Xbox: 1024}
+		static axes := {LX: 2, LY: 3, RX: 4, RY: 5, LT: 0, RT: 1}
+		
+		this.Buttons := {}
+		for name, id in buttons {
+			this.Buttons[name] := new this._ButtonHelper(this, id)
+		}
+		
+		this.Axes := {}
+		for name, id in axes {
+			this.Axes[name] := new this._AxisHelper(this, id)
+		}
+		
+		this.Dpad := new this._DpadHelper(this)
+		
+		base.__New()
+	}
+	
+	class _ButtonHelper {
+		__New(parent, id){
+			this._Parent := parent
+			this._Id := id
+		}
+		
+		SetState(state){
+			this._Parent.Instance.SetButtonState(this._Id, state)
+			this._Parent.Instance.SendReport()
+			return this._Parent
+		}
+	}
+	
+	class _AxisHelper {
+		__New(parent, id){
+			this._Parent := parent
+			this._id := id
+		}
+		
+		SetState(state){
+			this._Parent.Instance.SetAxisState(this._Id, this.ConvertAxis(state))
+			this._Parent.Instance.SendReport()
+		}
+		
+		ConvertAxis(state){
+			value := round((state * 655.36) - 32768)
+			if (value == 32768)
+				return 32767
+			return value
+		}
+	}
+	
+	class _DpadHelper {
+		_DpadStates := {1:0, 8:0, 2:0, 4:0} ; Up, Right, Down, Left
+		__New(parent){
+			this._Parent := parent
+		}
+		
+		SetState(state){
+			static dpadDirections := { None: {1:0, 8:0, 2:0, 4:0}
+				, Up: {1:1, 8:0, 2:0, 4:0}
+				, UpRight: {1:1, 8:1, 2:0, 4:0}
+				, Right: {1:0, 8:1, 2:0, 4:0}
+				, DownRight: {1:0, 8:1, 2:1, 4:0}
+				, Down: {1:0, 8:0, 2:1, 4:0}
+				, DownLeft: {1:0, 8:0, 2:1, 4:1}
+				, Left: {1:0, 8:0, 2:0, 4:1}
+				, UpLeft: {1:1, 8:0, 2:0, 4:1}}
+			newStates := dpadDirections[state]
+			for id, newState in newStates {
+				oldState := this._DpadStates[id]
+				if (oldState != newState){
+					this._DpadStates[id] := newState
+					this._Parent.SetButtonState(id, newState)
+				}
+				this._Parent.SendReport()
+			}
+		}
+	}
 }
