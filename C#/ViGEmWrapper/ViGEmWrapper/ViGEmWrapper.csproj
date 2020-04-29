@@ -72,6 +72,6 @@
   </Target>
   <Import Project="..\packages\Costura.Fody.1.6.2\build\dotnet\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.1.6.2\build\dotnet\Costura.Fody.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Q /Y "$(TargetDir)*.dll" "$(SolutionDir)..\..\include"</PostBuildEvent>
+    <PostBuildEvent>xcopy /Q /Y "$(TargetDir)*.dll" "$(SolutionDir)..\..\Lib"</PostBuildEvent>
   </PropertyGroup>
 </Project>
