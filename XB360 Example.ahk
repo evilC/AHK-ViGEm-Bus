@@ -1,5 +1,5 @@
 #SingleInstance force
-#include Include\AHK-ViGEm-Bus.ahk
+#include Lib\AHK-ViGEm-Bus.ahk
 
 ; Create a new Xbox 360 controller
 controller := new ViGEmXb360()

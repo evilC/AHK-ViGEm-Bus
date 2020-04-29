@@ -1,5 +1,5 @@
 #SingleInstance force
-#include Include\AHK-ViGEm-Bus.ahk
+#include Lib\AHK-ViGEm-Bus.ahk
 
 ; Create a new controller controller
 controller := new ViGEmDS4()
