@@ -198,7 +198,7 @@ class ViGEmXb360 extends ViGEmTarget {
 				oldState := this._DpadStates[id]
 				if (oldState != newState){
 					this._DpadStates[id] := newState
-					this._Parent.SetButtonState(id, newState)
+					this._Parent.Instance.SetButtonState(id, newState)
 				}
 				this._Parent.SendReport()
 			}
