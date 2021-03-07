@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 - Added support for feedback (Rumble, LEDs)
 ### Changed
+- Moved from old Vigem.Net to new Nefarius.Vigem.Net NuGet package
 ### Deprecated
 ### Removed
 ### Fixed
