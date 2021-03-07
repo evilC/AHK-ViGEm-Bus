@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Nefarius.ViGEm.Client.Targets;
+﻿using Nefarius.ViGEm.Client.Targets;
 using Nefarius.ViGEm.Client.Targets.DualShock4;
 
 namespace ViGEmWrapper
@@ -8,6 +7,10 @@ namespace ViGEmWrapper
     {
         private readonly DualShock4Controller _controller;
         private readonly DualShock4Report _report;
+        private dynamic _feedbackCallback;
+        private byte _lastLargeMotor;
+        private byte _lastSmallMotor;
+        private string _lastLightBarColor = "0x000000";
 
         public Ds4()
         {
@@ -44,6 +47,24 @@ namespace ViGEmWrapper
         public void SendReport()
         {
             _controller.SendReport(_report);
+        }
+
+        public void SubscribeFeedback(dynamic callback)
+        {
+            _feedbackCallback = callback;
+            _controller.FeedbackReceived += OnFeedbackReceived;
+        }
+
+        private void OnFeedbackReceived(object sender, DualShock4FeedbackReceivedEventArgs e)
+        {
+            if (_feedbackCallback == null) return;
+            var lightBarColor = $"0x{e.LightbarColor.Red:X2}{e.LightbarColor.Green:X2}{e.LightbarColor.Blue:X2}";
+            if (e.LargeMotor == _lastLargeMotor && e.SmallMotor == _lastSmallMotor &&
+                lightBarColor == _lastLightBarColor) return;
+            _lastLargeMotor = e.LargeMotor;
+            _lastSmallMotor = e.SmallMotor;
+            _lastLightBarColor = lightBarColor;
+            _feedbackCallback(e.LargeMotor, e.SmallMotor, lightBarColor);
         }
     }
 }

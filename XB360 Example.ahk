@@ -3,7 +3,7 @@
 
 ; Create a new Xbox 360 controller
 controller := new ViGEmXb360()
-Tooltip % controller.SubscribeFeedback(Func("OnFeedback"))
+controller.SubscribeFeedback(Func("OnFeedback"))
 return
 
 OnFeedback(largeMotor, smallMotor, ledNumber){
@@ -11,23 +11,6 @@ OnFeedback(largeMotor, smallMotor, ledNumber){
 }
 
 ; === Buttons
-left::
-	controller.Axes.LT.SetState(100)
-	return
-
-left up::
-	controller.Axes.LT.SetState(0)
-	return
-
-right::
-	controller.Axes.RT.SetState(100)
-	return
-
-right up::
-	controller.Axes.RT.SetState(0)
-	return
-
-
 1::
 	controller.Buttons.A.SetState(true)
 	return
@@ -168,6 +151,24 @@ l::
 j up::
 l up::
 	controller.Axes.RX.SetState(50)
+	return
+
+; == Left Trigger
+left::
+	controller.Axes.LT.SetState(100)
+	return
+
+left up::
+	controller.Axes.LT.SetState(0)
+	return
+
+; == Right Trigger
+right::
+	controller.Axes.RT.SetState(100)
+	return
+
+right up::
+	controller.Axes.RT.SetState(0)
 	return
 
 ; === Dpad

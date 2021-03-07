@@ -37,6 +37,10 @@ class ViGEmTarget {
 	SendReport(){
 		this.Instance.SendReport()
 	}
+	
+	SubscribeFeedback(callback){
+		this.Instance.SubscribeFeedback(callback)
+	}
 }
 
 ; DS4 (DualShock 4 for Playstation 4)
@@ -143,10 +147,6 @@ class ViGEmXb360 extends ViGEmTarget {
 		this.Dpad := new this._DpadHelper(this)
 		
 		base.__New()
-	}
-	
-	SubscribeFeedback(callback){
-		this.Instance.SubscribeFeedback(callback)
 	}
 	
 	class _ButtonHelper {
