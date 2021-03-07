@@ -3,7 +3,12 @@
 
 ; Create a new controller controller
 controller := new ViGEmDS4()
+controller.SubscribeFeedback(Func("OnFeedback"))
 return
+
+OnFeedback(largeMotor, smallMotor, lightbarColor){
+	OutputDebug % "AHK| Feedback received - LargeMotor: " largeMotor ", SmallMotor:  " smallMotor ", LightBarColor: " lightbarColor
+}
 
 ; === Buttons
 1::
@@ -173,10 +178,22 @@ l up::
 	controller.Axes.RX.SetState(50)
 	return
 
-Left::
+; == Left Trigger
+left::
+	controller.Axes.LT.SetState(100)
 	return
 
-Right::
+left up::
+	controller.Axes.LT.SetState(0)
+	return
+
+; == Right Trigger
+right::
+	controller.Axes.RT.SetState(100)
+	return
+
+right up::
+	controller.Axes.RT.SetState(0)
 	return
 
 ; === Dpad

@@ -7,6 +7,7 @@ namespace ViGEmWrapper
     {
         private readonly Xbox360Controller _controller;
         private readonly Xbox360Report _report;
+        private dynamic _feedbackCallback;
 
         public Xb360()
         {
@@ -33,6 +34,18 @@ namespace ViGEmWrapper
         public void SendReport()
         {
             _controller.SendReport(_report);
+        }
+
+        public void SubscribeFeedback(dynamic callback)
+        {
+            _feedbackCallback = callback;
+            _controller.FeedbackReceived += OnFeedbackReceived;
+        }
+
+        private void OnFeedbackReceived(object sender, Xbox360FeedbackReceivedEventArgs e)
+        {
+            if (_feedbackCallback == null) return;
+            _feedbackCallback(e.LargeMotor, e.SmallMotor, e.LedNumber);
         }
     }
 }
