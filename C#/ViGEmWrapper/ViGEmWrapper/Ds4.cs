@@ -5,6 +5,7 @@ namespace ViGEmWrapper
 {
     public class Ds4
     {
+        /*
         private readonly DualShock4Controller _controller;
         private readonly DualShock4Report _report;
         private dynamic _feedbackCallback;
@@ -66,5 +67,6 @@ namespace ViGEmWrapper
             _lastLightBarColor = lightBarColor;
             _feedbackCallback(e.LargeMotor, e.SmallMotor, lightBarColor);
         }
+        */
     }
 }

@@ -9,21 +9,21 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
+            var xb = new Xb360();
+            xb.SetButtonState(1, true);
+            xb.SubmitReport();
+            xb.SetButtonState(1, false);
+            xb.SubmitReport();
+            xb.SubscribeFeedback(new Action<byte, byte, byte>(OnXbFeedback));
 
-            //var xb = new Xb360();
-            //xb.SetButtonState(Xbox360Buttons.A, true);
-            //xb.SendReport();
-            //xb.SetButtonState(Xbox360Buttons.A, false);
-            //xb.SendReport();
-            //xb.SubscribeFeedback(new Action<byte, byte, byte>(OnXbFeedback));
+            //var ds4 = new Ds4();
+            //ds4.SetButtonState(DualShock4Buttons.Circle, true);
+            //ds4.SubmitReport();
+            //ds4.SubscribeFeedback(new Action<byte, byte, string>(OnDs4Feedback));
 
-            var ds4 = new Ds4();
-            ds4.SetButtonState(DualShock4Buttons.Circle, true);
-            ds4.SendReport();
-            ds4.SubscribeFeedback(new Action<byte, byte, string>(OnDs4Feedback));
+            //ds4.SetButtonState(DualShock4Buttons.Circle, false);
+            //ds4.SubmitReport();
 
-            ds4.SetButtonState(DualShock4Buttons.Circle, false);
-            ds4.SendReport();
             Console.ReadLine();
         }
 
