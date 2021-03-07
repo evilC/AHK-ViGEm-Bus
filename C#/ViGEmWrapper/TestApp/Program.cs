@@ -23,6 +23,7 @@ namespace TestApp
             ds4.SetButtonState(DualShock4Buttons.Circle, false);
             ds4.SendReport();
 
+            Console.ReadLine();
         }
     }
 }

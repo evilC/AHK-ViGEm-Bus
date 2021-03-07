@@ -145,6 +145,10 @@ class ViGEmXb360 extends ViGEmTarget {
 		base.__New()
 	}
 	
+	SubscribeFeedback(callback){
+		this.Instance.SubscribeFeedback(callback)
+	}
+	
 	class _ButtonHelper {
 		__New(parent, id){
 			this._Parent := parent
