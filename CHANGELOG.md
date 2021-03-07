@@ -5,11 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 ### Added
-- Added support for feedback (Rumble, LEDs)
 ### Changed
 ### Deprecated
 ### Removed
 ### Fixed
+
+## [0.0.3] - 2021-03-07
+### Added
+- Added support for feedback (Rumble, LEDs)
 
 ## [0.0.2] - 2020-05-08
 - Fix Xbox360 Dpad
